@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TSVR-CoT 项目框架图</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+        }
+        .architecture {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        .layer {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            border-left: 5px solid #667eea;
+        }
+        .layer-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .icon {
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+        }
+        .modules {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .module {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+        .module:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+        .module-name {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+        .module-desc {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        .flow {
+            margin-top: 40px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 30px;
+            border-radius: 15px;
+        }
+        .flow-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .flow-diagram {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .stage {
+            flex: 1;
+            min-width: 250px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .stage-number {
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            background: #667eea;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        .stage-title {
+            font-weight: bold;
+            color: #333;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        .stage-content {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+        .stage-output {
+            margin-top: 12px;
+            padding: 10px;
+            background: #f0f4ff;
+            border-radius: 8px;
+            border-left: 3px solid #667eea;
+        }
+        .stage-output-title {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 0.85em;
+            margin-bottom: 5px;
+        }
+        .stage-output-list {
+            font-size: 0.8em;
+            color: #555;
+            line-height: 1.5;
+        }
+        .arrow {
+            font-size: 2em;
+            color: #667eea;
+            align-self: center;
+        }
+        .validation-loop {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff3cd;
+            border-radius: 10px;
+            border-left: 4px solid #ffc107;
+        }
+        .validation-loop-title {
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 8px;
+        }
+        .tech-stack {
+            margin-top: 40px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .tech-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        .tech-item:hover {
+            transform: scale(1.05);
+        }
+        .tech-name {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 8px;
+        }
+        .tech-version {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌀 TSVR-CoT 项目框架图</h1>
+        
+        <!-- 系统架构 -->
+        <div class="architecture">
+            <!-- Layer 1: 核心引擎层 -->
+            <div class="layer">
+                <div class="layer-title">
+                    <span class="icon">1</span>
+                    核心引擎层 (Core Engine Layer)
+                </div>
+                <div class="modules">
+                    <div class="module">
+                        <div class="module-name">CoT Engine</div>
+                        <div class="module-desc">
+                            <strong>文件:</strong> src/base/cot_engine.py<br>
+                            <strong>功能:</strong> 三阶段CoT推理流程控制<br>
+                            <strong>新增:</strong> 验证-重推理循环机制<br>
+                            <strong>新增:</strong> 模式提取与状态检查
+                        </div>
+                    </div>
+                    <div class="module">
+                        <div class="module-name">VLM Agent</div>
+                        <div class="module-desc">
+                            <strong>文件:</strong> src/base/vlm_agent.py<br>
+                            <strong>功能:</strong> EAS API调用封装<br>
+                            <strong>支持:</strong> 图像+文本多模态输入<br>
+                            <strong>支持:</strong> 重试机制和错误处理
+                        </div>
+                    </div>
+                    <div class="module">
+                        <div class="module-name">Validation Engine</div>
+                        <div class="module-desc">
+                            <strong>文件:</strong> src/base/validation.py<br>
+                            <strong>功能:</strong> 多策略验证机制<br>
+                            <strong>包含:</strong> 反问式验证、视觉推理验证
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Layer 2: 提示模板层 -->
+            <div class="layer">
+                <div class="layer-title">
+                    <span class="icon">2</span>
+                    提示模板层 (Prompt Template Layer)
+                </div>
+                <div class="modules">
+                    <div class="module">
+                        <div class="module-name">Task Templates</div>
+                        <div class="module-desc">
+                            <strong>文件:</strong> src/utils/prompt_templates.py<br>
+                            <strong>功能:</strong> 任务特定的prompt模板<br>
+                            <strong>支持:</strong> washer_knob, generic_visual<br>
+                            <strong>重构:</strong> Stage3几何验证prompt
+                        </div>
+                    </div>
+                    <div class="module">
+                        <div class="module-name">Stage1: Rule Extraction</div>
+                        <div class="module-desc">
+                            <strong>任务:</strong> 几何规则提取<br>
+                            <strong>要求:</strong> 旋钮中心、半径、指针角度、刻度线位置<br>
+                            <strong>输出:</strong> 结构化几何信息
+                        </div>
+                    </div>
+                    <div class="module">
+                        <div class="module-name">Stage2: Application</div>
+                        <div class="module-desc">
+                            <strong>任务:</strong> 应用规则推理答案<br>
+                            <strong>输入:</strong> Stage1规则 + 图像<br>
+                            <strong>输出:</strong> 初步答案 (带&lt;answer&gt;标签)
+                        </div>
+                    </div>
+                    <div class="module">
+                        <div class="module-name">Stage3: Geometric Validation</div>
+                        <div class="module-desc">
+                            <strong>任务:</strong> 严格几何验证<br>
+                            <strong>测试:</strong> 共线性、最近刻度线、邻近模式<br>
+                            <strong>阈值:</strong> 5度角度容差
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Layer 3: 可视化层 -->
+            <div class="layer">
+                <div class="layer-title">
+                    <span class="icon">3</span>
+                    可视化层 (Visualization Layer)
+                </div>
+                <div class="modules">
+                    <div class="module">
+                        <div class="module-name">Geometry Visualization</div>
+                        <div class="module-desc">
+                            <strong>文件:</strong> src/utils/visualization.py<br>
+                            <strong>新增:</strong> draw_auxiliary_lines_on_image()<br>
+                            <strong>功能:</strong> PIL直接绘制辅助线<br>
+                            <strong>输出:</strong> *_stage1_auxiliary.jpg
+                        </div>
+                    </div>
+                    <div class="module">
+                        <div class="module-name">JSON Storage</div>
+                        <div class="module-desc">
+                            <strong>新增:</strong> save_geometric_info_to_json()<br>
+                            <strong>输出:</strong> stage1_geometry.json<br>
+                            <strong>输出:</strong> stage2_answer.json<br>
+                            <strong>输出:</strong> stage3_validation.json
+                        </div>
+                    </div>
+                    <div class="module">
+                        <div class="module-name">HTML Report Generator</div>
+                        <div class="module-desc">
+                            <strong>文件:</strong> scripts/generate_html_report.py<br>
+                            <strong>优化:</strong> 移除中文标签<br>
+                            <strong>功能:</strong> 交互式结果展示
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Layer 4: 应用层 -->
+            <div class="layer">
+                <div class="layer-title">
+                    <span class="icon">4</span>
+                    应用层 (Application Layer)
+                </div>
+                <div class="modules">
+                    <div class="module">
+                        <div class="module-name">Washer Knob Analyzer</div>
+                        <div class="module-desc">
+                            <strong>文件:</strong> scripts/washer_knob_analyzer.py<br>
+                            <strong>功能:</strong> 洗衣机旋钮分析主程序<br>
+                            <strong>支持:</strong> 命令行参数、批量处理
+                        </div>
+                    </div>
+                    <div class="module">
+                        <div class="module-name">CoT Evaluator</div>
+                        <div class="module-desc">
+                            <strong>文件:</strong> scripts/cot_evaluator.py<br>
+                            <strong>功能:</strong> 评估系统性能<br>
+                            <strong>指标:</strong> 准确率、置信度、处理时间
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 推理流程 -->
+        <div class="flow">
+            <div class="flow-title">三阶段CoT推理流程</div>
+            <div class="flow-diagram">
+                <div class="stage">
+                    <div class="stage-number">1</div>
+                    <div class="stage-title">规则提取</div>
+                    <div class="stage-content">
+                        分析图像几何特征,提取判断规则
+                    </div>
+                    <div class="stage-output">
+                        <div class="stage-output-title">输出:</div>
+                        <div class="stage-output-list">
+                            • 旋钮中心坐标<br>
+                            • 旋钮半径<br>
+                            • 红色指针角度<br>
+                            • 绿色刻度线列表<br>
+                            • 对齐规则
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="arrow">→</div>
+                
+                <div class="stage">
+                    <div class="stage-number">2</div>
+                    <div class="stage-title">应用推理</div>
+                    <div class="stage-content">
+                        基于规则推导当前档位
+                    </div>
+                    <div class="stage-output">
+                        <div class="stage-output-title">输出:</div>
+                        <div class="stage-output-list">
+                            • 初步答案<br>
+                            • 推理过程<br>
+                            • 角度计算
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="arrow">→</div>
+                
+                <div class="stage">
+                    <div class="stage-number">3</div>
+                    <div class="stage-title">几何验证</div>
+                    <div class="stage-content">
+                        严格验证答案的几何正确性
+                    </div>
+                    <div class="stage-output">
+                        <div class="stage-output-title">验证测试:</div>
+                        <div class="stage-output-list">
+                            ✓ 共线性测试 (5度容差)<br>
+                            ✓ 最近刻度线测试<br>
+                            ✓ 邻近模式检查<br>
+                            → VALID / INVALID
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="validation-loop">
+                <div class="validation-loop-title">🔄 验证-重推理循环</div>
+                <div style="color: #856404; font-size: 0.9em; line-height: 1.6;">
+                    • 如果Stage3验证失败 → 记录错误原因<br>
+                    • 返回Stage2重新推理 (带失败提示)<br>
+                    • 最多重试2次<br>
+                    • 如有建议答案可直接采用<br>
+                    • 记录所有尝试到retry_history
+                </div>
+            </div>
+        </div>
+
+        <!-- 技术栈 -->
+        <div class="tech-stack">
+            <div class="tech-item">
+                <div class="tech-name">Python</div>
+                <div class="tech-version">3.8+</div>
+            </div>
+            <div class="tech-item">
+                <div class="tech-name">PIL/Pillow</div>
+                <div class="tech-version">图像处理</div>
+            </div>
+            <div class="tech-item">
+                <div class="tech-name">OpenCV</div>
+                <div class="tech-version">几何检测</div>
+            </div>
+            <div class="tech-item">
+                <div class="tech-name">Matplotlib</div>
+                <div class="tech-version">可视化</div>
+            </div>
+            <div class="tech-item">
+                <div class="tech-name">NumPy</div>
+                <div class="tech-version">数值计算</div>
+            </div>
+            <div class="tech-item">
+                <div class="tech-name">Qwen-VL</div>
+                <div class="tech-version">235B 多模态模型</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

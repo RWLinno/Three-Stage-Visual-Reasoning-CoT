@@ -1,0 +1,7 @@
+requests
+Pillow
+opencv-python-headless
+numpy
+matplotlib
+jsonlines
+tqdm
